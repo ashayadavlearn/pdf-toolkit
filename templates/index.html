@@ -1,0 +1,238 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard – PDF Toolkit{% endblock %}
+
+{% block content %}
+<!-- Hero Header -->
+<div class="hero-header text-center">
+    <div class="container">
+        <h1 class="hero-title mb-2">PDF Toolkit</h1>
+        <p class="hero-subtitle mx-auto">All-in-one PDF tools for students and professionals. Merge, split, extract text, run OCR, compress, rotate, and manage your PDFs locally.</p>
+        
+        <div class="d-flex justify-content-center gap-3 mt-4 flex-wrap">
+            <div class="bg-white bg-opacity-10 backdrop-blur px-4 py-2 rounded-pill text-white border border-white border-opacity-25">
+                <i class="fas fa-bolt text-warning me-2"></i> 100% Free & Local Processing
+            </div>
+            <div class="bg-white bg-opacity-10 backdrop-blur px-4 py-2 rounded-pill text-white border border-white border-opacity-25">
+                <i class="fas fa-shield-alt text-info me-2"></i> Private & Secure
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Statistics Counter Row -->
+    <div class="row g-3 mb-5">
+        <div class="col-md-4">
+            <div class="meta-card d-flex align-items-center">
+                <div class="meta-icon bg-purple-light p-3 rounded-circle me-3">
+                    <i class="fas fa-cogs"></i>
+                </div>
+                <div>
+                    <div class="meta-title">Total Operations</div>
+                    <div class="meta-value">{{ stats.total_operations }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="meta-card d-flex align-items-center">
+                <div class="meta-icon bg-green-light p-3 rounded-circle me-3">
+                    <i class="fas fa-check-double"></i>
+                </div>
+                <div>
+                    <div class="meta-title">Successful Executions</div>
+                    <div class="meta-value">{{ stats.successful_operations }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="meta-card d-flex align-items-center">
+                <div class="meta-icon bg-blue-light p-3 rounded-circle me-3">
+                    <i class="fas fa-layer-group"></i>
+                </div>
+                <div>
+                    <div class="meta-title">Available PDF Utilities</div>
+                    <div class="meta-value">9 Tools</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tools Grid Title -->
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <div>
+            <h3 class="fw-bold mb-0">Select PDF Tool</h3>
+            <p class="text-muted small mb-0">Choose an operation below to process your PDF files instantly</p>
+        </div>
+    </div>
+
+    <!-- 9 PDF Tool Cards -->
+    <div class="row g-4 mb-5">
+        <!-- 1. Merge PDF -->
+        <div class="col-md-6 col-lg-4">
+            <div class="tool-card">
+                <div class="tool-icon bg-purple-light">
+                    <i class="fas fa-object-group"></i>
+                </div>
+                <h5 class="tool-title">Merge PDF</h5>
+                <p class="tool-desc">Combine multiple PDF documents into a single organized PDF file with custom file order.</p>
+                <a href="{{ url_for('merge_pdf_route') }}" class="btn btn-tool">
+                    Open Tool <i class="fas fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- 2. Split PDF -->
+        <div class="col-md-6 col-lg-4">
+            <div class="tool-card">
+                <div class="tool-icon bg-blue-light">
+                    <i class="fas fa-scissors"></i>
+                </div>
+                <h5 class="tool-title">Split PDF</h5>
+                <p class="tool-desc">Separate a multi-page PDF into individual single pages or page range groups (ZIP export).</p>
+                <a href="{{ url_for('split_pdf_route') }}" class="btn btn-tool">
+                    Open Tool <i class="fas fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- 3. Extract Pages -->
+        <div class="col-md-6 col-lg-4">
+            <div class="tool-card">
+                <div class="tool-icon bg-green-light">
+                    <i class="fas fa-copy"></i>
+                </div>
+                <h5 class="tool-title">Extract Pages</h5>
+                <p class="tool-desc">Specify page numbers or custom ranges to create a new PDF with only your selected pages.</p>
+                <a href="{{ url_for('extract_pages_route') }}" class="btn btn-tool">
+                    Open Tool <i class="fas fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- 4. Extract Text -->
+        <div class="col-md-6 col-lg-4">
+            <div class="tool-card">
+                <div class="tool-icon bg-orange-light">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <h5 class="tool-title">Extract Text</h5>
+                <p class="tool-desc">Extract plain text from digital PDFs with character & word counts. Download as TXT or PDF.</p>
+                <a href="{{ url_for('extract_text_route') }}" class="btn btn-tool">
+                    Open Tool <i class="fas fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- 5. OCR PDF -->
+        <div class="col-md-6 col-lg-4">
+            <div class="tool-card">
+                <div class="tool-icon bg-rose-light">
+                    <i class="fas fa-eye"></i>
+                </div>
+                <h5 class="tool-title">OCR PDF</h5>
+                <p class="tool-desc">Extract text from scanned PDFs or images using Tesseract Optical Character Recognition.</p>
+                <a href="{{ url_for('ocr_pdf_route') }}" class="btn btn-tool">
+                    Open Tool <i class="fas fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- 6. Extract Tables -->
+        <div class="col-md-6 col-lg-4">
+            <div class="tool-card">
+                <div class="tool-icon bg-cyan-light">
+                    <i class="fas fa-table"></i>
+                </div>
+                <h5 class="tool-title">Extract Tables</h5>
+                <p class="tool-desc">Detect structured data tables inside PDFs and export them directly to CSV or Excel files.</p>
+                <a href="{{ url_for('extract_tables_route') }}" class="btn btn-tool">
+                    Open Tool <i class="fas fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- 7. Compress PDF -->
+        <div class="col-md-6 col-lg-4">
+            <div class="tool-card">
+                <div class="tool-icon bg-amber-light">
+                    <i class="fas fa-file-archive"></i>
+                </div>
+                <h5 class="tool-title">Compress PDF</h5>
+                <p class="tool-desc">Reduce PDF file size with Low, Medium, or High compression levels to save storage space.</p>
+                <a href="{{ url_for('compress_pdf_route') }}" class="btn btn-tool">
+                    Open Tool <i class="fas fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- 8. Rotate PDF -->
+        <div class="col-md-6 col-lg-4">
+            <div class="tool-card">
+                <div class="tool-icon bg-indigo-light">
+                    <i class="fas fa-redo"></i>
+                </div>
+                <h5 class="tool-title">Rotate PDF</h5>
+                <p class="tool-desc">Rotate orientation of all or selected pages by 90°, 180°, or 270° clockwise.</p>
+                <a href="{{ url_for('rotate_pdf_route') }}" class="btn btn-tool">
+                    Open Tool <i class="fas fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- 9. Delete Pages -->
+        <div class="col-md-6 col-lg-4">
+            <div class="tool-card">
+                <div class="tool-icon bg-teal-light">
+                    <i class="fas fa-trash-alt"></i>
+                </div>
+                <h5 class="tool-title">Delete Pages</h5>
+                <p class="tool-desc">Remove unwanted pages from a PDF document easily while keeping remaining content safe.</p>
+                <a href="{{ url_for('delete_pages_route') }}" class="btn btn-tool">
+                    Open Tool <i class="fas fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Operations Table -->
+    {% if recent_history %}
+    <div class="card border-0 shadow-sm rounded-3">
+        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+            <h5 class="fw-bold mb-0"><i class="fas fa-history text-primary me-2"></i> Recently Processed Files</h5>
+            <a href="{{ url_for('history_route') }}" class="btn btn-sm btn-outline-primary">View Full History</a>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Operation</th>
+                        <th>Input File</th>
+                        <th>Output File</th>
+                        <th>Date & Time</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in recent_history[:5] %}
+                    <tr>
+                        <td><span class="badge bg-indigo-light text-primary fw-semibold">{{ item.operation_type }}</span></td>
+                        <td class="small fw-semibold text-truncate" style="max-width: 180px;">{{ item.input_filename }}</td>
+                        <td class="small text-muted text-truncate" style="max-width: 180px;">{{ item.output_filename }}</td>
+                        <td class="small text-muted">{{ item.created_at }}</td>
+                        <td>
+                            {% if item.status == 'Success' %}
+                                <span class="badge bg-success-subtle text-success"><i class="fas fa-check-circle me-1"></i> Success</span>
+                            {% else %}
+                                <span class="badge bg-danger-subtle text-danger"><i class="fas fa-times-circle me-1"></i> Failed</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

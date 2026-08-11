@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Operation Result – PDF Toolkit{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-lg rounded-3 text-center">
+                <div class="card-body p-5">
+                    
+                    <!-- Success Icon -->
+                    <div class="mb-4">
+                        <div class="bg-success-subtle text-success rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                            <i class="fas fa-check-circle fa-3x"></i>
+                        </div>
+                    </div>
+
+                    <h2 class="fw-bold text-dark mb-2">{{ title or "PDF Processed Successfully!" }}</h2>
+                    <p class="text-muted mb-4">{{ message or "Your output file is ready for download." }}</p>
+
+                    <!-- Details Box -->
+                    <div class="bg-light p-4 rounded-3 border text-start mb-4">
+                        <div class="row g-3">
+                            <div class="col-sm-6">
+                                <div class="small text-muted">Operation Performed</div>
+                                <div class="fw-bold text-primary">{{ result.operation_type if result else "PDF Processing" }}</div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="small text-muted">Output Filename</div>
+                                <div class="fw-bold text-truncate" title="{{ filename }}">{{ filename }}</div>
+                            </div>
+                            
+                            {% if result and result.original_size %}
+                            <div class="col-sm-6">
+                                <div class="small text-muted">Original Size</div>
+                                <div class="fw-semibold">{{ result.original_size }}</div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="small text-muted">Compressed Size</div>
+                                <div class="fw-bold text-success">{{ result.compressed_size }} (Saved {{ result.percentage_reduction }}%)</div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-grid gap-3">
+                        <a href="{{ url_for('download_file', filename=filename) }}" class="btn btn-success btn-lg fw-bold shadow-sm">
+                            <i class="fas fa-download me-2"></i> Download Output File
+                        </a>
+
+                        <div class="d-flex justify-content-center gap-2">
+                            <a href="{{ return_url or url_for('index') }}" class="btn btn-outline-primary">
+                                <i class="fas fa-redo me-1"></i> Perform Another Operation
+                            </a>
+                            <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-home me-1"></i> Return to Dashboard
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

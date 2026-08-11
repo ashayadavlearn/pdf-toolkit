@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}Operation History – PDF Toolkit{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            <h2 class="fw-bold mb-1"><i class="fas fa-history text-primary me-2"></i> Operation History</h2>
+            <p class="text-muted small mb-0">Local SQLite database records of all PDF processing tasks performed.</p>
+        </div>
+
+        {% if history %}
+        <form action="{{ url_for('clear_history_route') }}" method="POST" onsubmit="return confirmAction('Are you sure you want to clear all operation history records?')">
+            <button type="submit" class="btn btn-outline-danger btn-sm">
+                <i class="fas fa-trash me-1"></i> Clear History
+            </button>
+        </form>
+        {% endif %}
+    </div>
+
+    <!-- History Table -->
+    <div class="card border-0 shadow-sm rounded-3">
+        <div class="card-body p-0">
+            {% if not history %}
+            <div class="text-center py-5">
+                <i class="fas fa-history fa-3x text-muted mb-3"></i>
+                <h5 class="fw-bold text-secondary">No operations logged yet</h5>
+                <p class="text-muted small mb-3">Your processed files and actions will appear here automatically.</p>
+                <a href="{{ url_for('index') }}" class="btn btn-primary btn-sm">Start Using Tools</a>
+            </div>
+            {% else %}
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4">ID</th>
+                            <th>Operation Type</th>
+                            <th>Input File</th>
+                            <th>Output File</th>
+                            <th>Details / Metrics</th>
+                            <th>Timestamp</th>
+                            <th class="pe-4">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in history %}
+                        <tr>
+                            <td class="ps-4 text-muted small">#{{ item.id }}</td>
+                            <td>
+                                <span class="badge bg-indigo-light text-primary fw-semibold px-2 py-1">
+                                    {{ item.operation_type }}
+                                </span>
+                            </td>
+                            <td class="fw-semibold text-truncate" style="max-width: 180px;" title="{{ item.input_filename }}">
+                                {{ item.input_filename }}
+                            </td>
+                            <td class="text-muted small text-truncate" style="max-width: 180px;" title="{{ item.output_filename }}">
+                                {{ item.output_filename }}
+                            </td>
+                            <td class="small text-secondary">{{ item.details or '-' }}</td>
+                            <td class="small text-muted">{{ item.created_at }}</td>
+                            <td class="pe-4">
+                                {% if item.status == 'Success' %}
+                                    <span class="badge bg-success-subtle text-success"><i class="fas fa-check-circle me-1"></i> Success</span>
+                                {% else %}
+                                    <span class="badge bg-danger-subtle text-danger"><i class="fas fa-times-circle me-1"></i> {{ item.status }}</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

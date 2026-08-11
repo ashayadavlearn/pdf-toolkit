@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}PDF Toolkit – PDF Merger, Splitter & Text Extractor{% endblock %}</title>
+    <meta name="description" content="All-in-one local Python PDF processing toolkit for students and professionals. Merge, Split, Extract, OCR, Compress, Rotate & Delete PDF pages easily.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="{{ url_for('index') }}">
+                <i class="fas fa-file-pdf text-danger me-2 fa-lg"></i>
+                <span>PDF Toolkit</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarMain">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'index' %}active{% endif %}" href="{{ url_for('index') }}">
+                            <i class="fas fa-home me-1"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="toolsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-tools me-1"></i> All Tools
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="toolsDropdown">
+                            <li><a class="dropdown-item py-2" href="{{ url_for('merge_pdf_route') }}"><i class="fas fa-object-group text-purple me-2"></i> Merge PDF</a></li>
+                            <li><a class="dropdown-item py-2" href="{{ url_for('split_pdf_route') }}"><i class="fas fa-scissors text-primary me-2"></i> Split PDF</a></li>
+                            <li><a class="dropdown-item py-2" href="{{ url_for('extract_pages_route') }}"><i class="fas fa-copy text-success me-2"></i> Extract Pages</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item py-2" href="{{ url_for('extract_text_route') }}"><i class="fas fa-file-alt text-warning me-2"></i> Extract Text</a></li>
+                            <li><a class="dropdown-item py-2" href="{{ url_for('ocr_pdf_route') }}"><i class="fas fa-eye text-danger me-2"></i> OCR Scanned PDF</a></li>
+                            <li><a class="dropdown-item py-2" href="{{ url_for('extract_tables_route') }}"><i class="fas fa-table text-info me-2"></i> Extract Tables</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item py-2" href="{{ url_for('compress_pdf_route') }}"><i class="fas fa-file-archive text-amber me-2"></i> Compress PDF</a></li>
+                            <li><a class="dropdown-item py-2" href="{{ url_for('rotate_pdf_route') }}"><i class="fas fa-redo text-indigo me-2"></i> Rotate PDF</a></li>
+                            <li><a class="dropdown-item py-2" href="{{ url_for('delete_pages_route') }}"><i class="fas fa-trash-alt text-rose me-2"></i> Delete Pages</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'history_route' %}active{% endif %}" href="{{ url_for('history_route') }}">
+                            <i class="fas fa-history me-1"></i> History
+                        </a>
+                    </li>
+                    <li class="nav-item ms-lg-2">
+                        <a class="nav-link {% if request.endpoint == 'about_route' %}active{% endif %}" href="{{ url_for('about_route') }}">
+                            <i class="fas fa-info-circle me-1"></i> About Project
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Flash Message Container -->
+    <div class="container mt-3">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category if category != 'error' else 'danger' }} alert-dismissible fade show shadow-sm" role="alert">
+                        {% if category == 'success' %}
+                            <i class="fas fa-check-circle me-2"></i>
+                        {% elif category in ['danger', 'error'] %}
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                        {% elif category == 'warning' %}
+                            <i class="fas fa-exclamation-circle me-2"></i>
+                        {% else %}
+                            <i class="fas fa-info-circle me-2"></i>
+                        {% endif %}
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Main Content Body -->
+    <main class="flex-shrink-0 mb-5">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Global Loading Spinner Overlay -->
+    <div id="spinner-overlay" class="spinner-overlay">
+        <div class="spinner-border spinner-custom mb-3" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <h5 id="spinner-text" class="fw-bold">Processing PDF, please wait...</h5>
+        <p class="text-white-50 small mb-0">Running Python backend operations locally</p>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container text-center">
+            <p class="mb-1 text-white-50"><strong>PDF Toolkit</strong> – Full-Stack Python Flask College Project</p>
+            <p class="small mb-0 text-muted">
+                Built with Python 3, Flask, pypdf, pdfplumber, PyMuPDF & Bootstrap 5 | Local & Free PDF Utilities
+            </p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

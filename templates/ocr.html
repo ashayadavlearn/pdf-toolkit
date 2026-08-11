@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}OCR Scanned PDF – PDF Toolkit{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">OCR Scanned PDF</li>
+        </ol>
+    </nav>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card border-0 shadow-sm rounded-3 mb-4">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="tool-icon bg-rose-light me-3 mb-0">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <div>
+                            <h3 class="fw-bold mb-1">OCR Text Recognition (Scanned PDF)</h3>
+                            <p class="text-muted small mb-0">Use Tesseract Optical Character Recognition engine to recognize text from scanned images or photos in PDF format.</p>
+                        </div>
+                    </div>
+
+                    <form action="{{ url_for('ocr_pdf_route') }}" method="POST" enctype="multipart/form-data" class="pdf-action-form" data-action-name="Running OCR Recognition">
+                        <div class="dropzone mb-3">
+                            <i class="fas fa-file-image dropzone-icon text-rose"></i>
+                            <div class="dropzone-text">Upload Scanned PDF or Document Image</div>
+                            <div class="dropzone-subtext mb-3">Converts pages to high-res images and executes Tesseract engine</div>
+                            <button type="button" class="btn btn-outline-danger btn-sm px-3">Choose Scanned PDF</button>
+                            <input type="file" name="file" class="d-none single-pdf-input" accept=".pdf" required>
+                        </div>
+
+                        <div id="pdf-info-container" class="mb-3" style="display: none;">
+                            <div class="alert alert-light border d-flex align-items-center justify-content-between">
+                                <span class="fw-bold" id="preview-filename">scanned.pdf</span>
+                                <span class="badge bg-danger" id="preview-filesize">0 MB</span>
+                            </div>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-danger btn-lg fw-bold">
+                                <i class="fas fa-eye me-2"></i> Run OCR Text Extraction
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- OCR Results Box -->
+            {% if ocr_result %}
+            <div class="card border-0 shadow-sm rounded-3">
+                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <h5 class="fw-bold mb-0"><i class="fas fa-magic text-danger me-2"></i> OCR Extracted Output</h5>
+                    
+                    {% if ocr_result.success %}
+                    <div class="d-flex gap-2">
+                        <button type="button" id="copy-text-btn" class="btn btn-sm btn-outline-primary fw-semibold">
+                            <i class="fas fa-copy me-1"></i> Copy Text
+                        </button>
+                        {% if ocr_result.download_txt %}
+                        <a href="{{ url_for('download_file', filename=ocr_result.download_txt) }}" class="btn btn-sm btn-outline-success fw-semibold">
+                            <i class="fas fa-download me-1"></i> Download TXT File
+                        </a>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="card-body">
+                    {% if ocr_result.tesseract_missing %}
+                    <div class="alert alert-warning border shadow-sm p-4">
+                        <div class="d-flex">
+                            <i class="fas fa-exclamation-triangle fa-3x text-warning me-3"></i>
+                            <div>
+                                <h5 class="fw-bold text-dark mb-1">Tesseract OCR Engine Not Detected</h5>
+                                <p class="mb-2 text-secondary">Tesseract OCR executable is not installed or not added to system PATH environment variables on this machine.</p>
+                                <div class="bg-white p-3 rounded border mb-3">
+                                    <h6 class="fw-bold small text-uppercase text-muted">How to install Tesseract OCR (Free):</h6>
+                                    <ol class="mb-0 small text-dark ps-3">
+                                        <li>Download Windows installer from: <a href="https://github.com/UB-Mannheim/tesseract/wiki" target="_blank" class="fw-bold">UB-Mannheim Tesseract Wiki</a></li>
+                                        <li>Run installer and install to default directory (<code>C:\Program Files\Tesseract-OCR\</code>).</li>
+                                        <li>Or via Command Prompt: <code>winget install UB-Mannheim.TesseractOCR</code></li>
+                                        <li>Restart the Flask server after installation.</li>
+                                    </ol>
+                                </div>
+                                <span class="badge bg-secondary">Application handled gracefully without crashing</span>
+                            </div>
+                        </div>
+                    </div>
+                    {% elif not ocr_result.success %}
+                    <div class="alert alert-danger mb-0">
+                        <i class="fas fa-times-circle me-2"></i> {{ ocr_result.error }}
+                    </div>
+                    {% else %}
+
+                    <!-- Stats -->
+                    <div class="row g-3 mb-4 text-center">
+                        <div class="col-4">
+                            <div class="p-2 border rounded bg-light">
+                                <div class="small text-muted">Pages Processed</div>
+                                <div class="fw-bold fs-5 text-danger">{{ ocr_result.pages_processed }}</div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="p-2 border rounded bg-light">
+                                <div class="small text-muted">Recognized Words</div>
+                                <div class="fw-bold fs-5 text-success">{{ ocr_result.word_count }}</div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="p-2 border rounded bg-light">
+                                <div class="small text-muted">Recognized Characters</div>
+                                <div class="fw-bold fs-5 text-info">{{ ocr_result.char_count }}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="extracted-text-box" id="extracted-text-content">{{ ocr_result.text }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

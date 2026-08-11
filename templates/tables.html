@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}Extract Tables – PDF Toolkit{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Extract Tables</li>
+        </ol>
+    </nav>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card border-0 shadow-sm rounded-3 mb-4">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="tool-icon bg-cyan-light me-3 mb-0">
+                            <i class="fas fa-table"></i>
+                        </div>
+                        <div>
+                            <h3 class="fw-bold mb-1">Extract PDF Tables to Excel & CSV</h3>
+                            <p class="text-muted small mb-0">Locate structured data tables inside PDF pages and export directly to CSV or Microsoft Excel spreadsheets.</p>
+                        </div>
+                    </div>
+
+                    <form action="{{ url_for('extract_tables_route') }}" method="POST" enctype="multipart/form-data" class="pdf-action-form" data-action-name="Extracting PDF Table">
+                        <div class="dropzone mb-3">
+                            <i class="fas fa-table dropzone-icon text-info"></i>
+                            <div class="dropzone-text">Upload PDF containing tables</div>
+                            <div class="dropzone-subtext mb-3">Drag & Drop or click to browse</div>
+                            <button type="button" class="btn btn-outline-info btn-sm px-3 text-dark">Choose PDF</button>
+                            <input type="file" name="file" class="d-none single-pdf-input" accept=".pdf" required>
+                        </div>
+
+                        <div id="pdf-info-container" class="mb-3" style="display: none;">
+                            <div class="alert alert-light border d-flex align-items-center justify-content-between">
+                                <span class="fw-bold" id="preview-filename">financial_report.pdf</span>
+                                <span class="badge bg-info text-dark" id="preview-pagecount">0 Pages</span>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 align-items-center mb-4">
+                            <div class="col-md-4">
+                                <label for="page_number" class="form-label fw-bold">Target Page Number</label>
+                                <input type="number" class="form-control" id="page_number" name="page_number" value="1" min="1" required>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="form-text mt-md-4 text-muted">
+                                    Specify which page of the PDF contains the table matrix to extract.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-info text-dark btn-lg fw-bold">
+                                <i class="fas fa-table me-2"></i> Extract Table Data
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Table Extraction Result Container -->
+            {% if table_result %}
+            <div class="card border-0 shadow-sm rounded-3">
+                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <h5 class="fw-bold mb-0"><i class="fas fa-border-all text-info me-2"></i> Extracted Table Results</h5>
+                    
+                    {% if table_result.has_tables %}
+                    <div class="d-flex gap-2">
+                        {% if table_result.csv_filename %}
+                        <a href="{{ url_for('download_file', filename=table_result.csv_filename) }}" class="btn btn-sm btn-outline-success fw-semibold">
+                            <i class="fas fa-file-csv me-1"></i> Download CSV
+                        </a>
+                        {% endif %}
+                        {% if table_result.excel_filename %}
+                        <a href="{{ url_for('download_file', filename=table_result.excel_filename) }}" class="btn btn-sm btn-success fw-semibold">
+                            <i class="fas fa-file-excel me-1"></i> Download Excel (.xlsx)
+                        </a>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="card-body">
+                    {% if not table_result.has_tables %}
+                    <div class="alert alert-info border-0 d-flex align-items-center mb-0">
+                        <i class="fas fa-info-circle fa-2x me-3 text-info"></i>
+                        <div>
+                            <h6 class="fw-bold mb-1">No table detected</h6>
+                            <p class="mb-0 small">{{ table_result.message }}</p>
+                        </div>
+                    </div>
+                    {% else %}
+                    
+                    <!-- Stats Bar -->
+                    <div class="d-flex gap-3 mb-3 text-muted small fw-semibold">
+                        <span><i class="fas fa-file-alt me-1"></i> Page: {{ table_result.page_number }} of {{ table_result.total_pages }}</span>
+                        <span><i class="fas fa-list me-1"></i> Rows: {{ table_result.rows_count }}</span>
+                        <span><i class="fas fa-columns me-1"></i> Columns: {{ table_result.cols_count }}</span>
+                    </div>
+
+                    <!-- Render HTML Table -->
+                    <div class="table-responsive border rounded">
+                        {{ table_result.html_table | safe }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

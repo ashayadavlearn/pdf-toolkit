@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}Delete PDF Pages – PDF Toolkit{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Delete Pages</li>
+        </ol>
+    </nav>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-3">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="tool-icon bg-teal-light me-3 mb-0">
+                            <i class="fas fa-trash-alt"></i>
+                        </div>
+                        <div>
+                            <h3 class="fw-bold mb-1">Delete Unwanted PDF Pages</h3>
+                            <p class="text-muted small mb-0">Remove specific pages from a PDF document while preserving remaining content intact.</p>
+                        </div>
+                    </div>
+
+                    <form action="{{ url_for('delete_pages_route') }}" method="POST" enctype="multipart/form-data" class="pdf-action-form" data-action-name="Deleting Pages" onsubmit="return confirmAction('Are you sure you want to remove these pages from the PDF?')">
+                        
+                        <div class="dropzone mb-4">
+                            <i class="fas fa-trash-alt dropzone-icon text-teal"></i>
+                            <div class="dropzone-text">Upload PDF Document</div>
+                            <div class="dropzone-subtext mb-3">Drag & Drop or click to browse</div>
+                            <button type="button" class="btn btn-outline-danger btn-sm px-3">Choose File</button>
+                            <input type="file" name="file" class="d-none single-pdf-input" accept=".pdf" required>
+                        </div>
+
+                        <div id="pdf-info-container" class="mb-4" style="display: none;">
+                            <div class="alert alert-light border d-flex align-items-center justify-content-between">
+                                <span class="fw-bold" id="preview-filename">document.pdf</span>
+                                <span class="badge bg-danger fs-6" id="preview-pagecount">0 Pages</span>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="page_selection" class="form-label fw-bold">Pages to Delete</label>
+                            <input type="text" class="form-control form-control-lg" id="page_selection" name="page_selection" placeholder="e.g. 2 or 2,4,6 or 3-7" required>
+                            <div class="form-text mt-2">
+                                <span class="max-page-help fw-semibold text-danger"></span><br>
+                                Enter individual page numbers or ranges to remove.
+                            </div>
+                        </div>
+
+                        <div class="alert alert-warning small mb-4">
+                            <i class="fas fa-shield-alt me-1"></i> Safety Rule: You cannot delete all pages from a PDF document. At least 1 page must remain.
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-danger btn-lg fw-bold">
+                                <i class="fas fa-trash-alt me-2"></i> Delete Selected Pages
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

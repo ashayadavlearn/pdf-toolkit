@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}Rotate PDF Pages – PDF Toolkit{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Rotate PDF</li>
+        </ol>
+    </nav>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-3">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="tool-icon bg-indigo-light me-3 mb-0">
+                            <i class="fas fa-redo"></i>
+                        </div>
+                        <div>
+                            <h3 class="fw-bold mb-1">Rotate PDF Page Orientation</h3>
+                            <p class="text-muted small mb-0">Change page orientation for all pages or specific page numbers in your PDF document.</p>
+                        </div>
+                    </div>
+
+                    <form action="{{ url_for('rotate_pdf_route') }}" method="POST" enctype="multipart/form-data" class="pdf-action-form" data-action-name="Rotating PDF Pages">
+                        
+                        <div class="dropzone mb-4">
+                            <i class="fas fa-redo dropzone-icon text-indigo"></i>
+                            <div class="dropzone-text">Upload PDF File</div>
+                            <div class="dropzone-subtext mb-3">Drag & Drop or click to browse</div>
+                            <button type="button" class="btn btn-outline-indigo btn-sm px-3">Choose File</button>
+                            <input type="file" name="file" class="d-none single-pdf-input" accept=".pdf" required>
+                        </div>
+
+                        <div id="pdf-info-container" class="mb-4" style="display: none;">
+                            <div class="alert alert-light border d-flex align-items-center justify-content-between">
+                                <span class="fw-bold" id="preview-filename">document.pdf</span>
+                                <span class="badge bg-indigo-light text-primary fs-6" id="preview-pagecount">0 Pages</span>
+                            </div>
+                        </div>
+
+                        <!-- Angle Selection -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Select Rotation Angle</label>
+                            <div class="row g-3">
+                                <div class="col-4">
+                                    <div class="form-check card p-3 text-center border">
+                                        <input class="form-check-input float-none mb-2" type="radio" name="angle" id="angle_90" value="90" checked>
+                                        <label class="form-check-label d-block fw-bold" for="angle_90">
+                                            <i class="fas fa-redo fa-lg text-primary d-block mb-1"></i> 90° Clockwise
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-check card p-3 text-center border">
+                                        <input class="form-check-input float-none mb-2" type="radio" name="angle" id="angle_180" value="180">
+                                        <label class="form-check-label d-block fw-bold" for="angle_180">
+                                            <i class="fas fa-sync-alt fa-lg text-primary d-block mb-1"></i> 180° Flip
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-check card p-3 text-center border">
+                                        <input class="form-check-input float-none mb-2" type="radio" name="angle" id="angle_270" value="270">
+                                        <label class="form-check-label d-block fw-bold" for="angle_270">
+                                            <i class="fas fa-undo fa-lg text-primary d-block mb-1"></i> 270° (90° CCW)
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Scope Selection -->
+                        <div class="card border mb-4">
+                            <div class="card-header bg-light fw-bold">Pages to Rotate</div>
+                            <div class="card-body">
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="radio" name="scope" id="scope_all" value="all" checked onclick="document.getElementById('rotate-range-div').style.display='none'">
+                                    <label class="form-check-label fw-semibold" for="scope_all">
+                                        Rotate All Pages
+                                    </label>
+                                </div>
+
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="scope" id="scope_selected" value="selected" onclick="document.getElementById('rotate-range-div').style.display='block'">
+                                    <label class="form-check-label fw-semibold" for="scope_selected">
+                                        Rotate Selected Pages Only
+                                    </label>
+                                </div>
+
+                                <div id="rotate-range-div" class="ms-4 mt-2" style="display: none;">
+                                    <input type="text" class="form-control" name="page_selection" placeholder="e.g. 1,3,5 or 2-7">
+                                    <div class="form-text">Specify page numbers or range to apply rotation to.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg fw-bold">
+                                <i class="fas fa-redo me-2"></i> Rotate PDF
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

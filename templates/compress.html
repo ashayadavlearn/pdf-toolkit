@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Compress PDF – PDF Toolkit{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Compress PDF</li>
+        </ol>
+    </nav>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-3 mb-4">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="tool-icon bg-amber-light me-3 mb-0">
+                            <i class="fas fa-file-archive"></i>
+                        </div>
+                        <div>
+                            <h3 class="fw-bold mb-1">Compress PDF File Size</h3>
+                            <p class="text-muted small mb-0">Optimize PDF internal object streams and image resolutions to decrease file size.</p>
+                        </div>
+                    </div>
+
+                    <form action="{{ url_for('compress_pdf_route') }}" method="POST" enctype="multipart/form-data" class="pdf-action-form" data-action-name="Compressing PDF">
+                        
+                        <div class="dropzone mb-4">
+                            <i class="fas fa-file-archive dropzone-icon text-amber"></i>
+                            <div class="dropzone-text">Upload PDF File to Compress</div>
+                            <div class="dropzone-subtext mb-3">Drag & Drop or click to select</div>
+                            <button type="button" class="btn btn-outline-warning btn-sm px-3 text-dark">Choose PDF</button>
+                            <input type="file" name="file" class="d-none single-pdf-input" accept=".pdf" required>
+                        </div>
+
+                        <div id="pdf-info-container" class="mb-4" style="display: none;">
+                            <div class="alert alert-light border d-flex align-items-center justify-content-between">
+                                <div>
+                                    <div class="fw-bold" id="preview-filename">file.pdf</div>
+                                    <div class="small text-muted">Original Size: <strong id="preview-filesize">0 MB</strong></div>
+                                </div>
+                                <span class="badge bg-warning text-dark fs-6" id="preview-pagecount">0 Pages</span>
+                            </div>
+                        </div>
+
+                        <!-- Compression Level Selector Cards -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold mb-3">Select Compression Level</label>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <div class="card h-100 border p-3 text-center">
+                                        <div class="form-check text-start mb-2">
+                                            <input class="form-check-input" type="radio" name="level" id="comp_low" value="low">
+                                            <label class="form-check-label fw-bold" for="comp_low">Low Compression</label>
+                                        </div>
+                                        <p class="small text-muted mb-0">High visual quality, mild file size reduction.</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card h-100 border border-primary bg-primary bg-opacity-10 p-3 text-center">
+                                        <div class="form-check text-start mb-2">
+                                            <input class="form-check-input" type="radio" name="level" id="comp_medium" value="medium" checked>
+                                            <label class="form-check-label fw-bold text-primary" for="comp_medium">Medium (Recommended)</label>
+                                        </div>
+                                        <p class="small text-muted mb-0">Balanced quality and file size reduction.</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card h-100 border p-3 text-center">
+                                        <div class="form-check text-start mb-2">
+                                            <input class="form-check-input" type="radio" name="level" id="comp_high" value="high">
+                                            <label class="form-check-label fw-bold" for="comp_high">High Compression</label>
+                                        </div>
+                                        <p class="small text-muted mb-0">Maximum file compression, lower resolution.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-warning text-dark btn-lg fw-bold">
+                                <i class="fas fa-compress-alt me-2"></i> Compress PDF Now
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

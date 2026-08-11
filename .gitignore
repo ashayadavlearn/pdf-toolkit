@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+ENV/
+
+# Toolkit local folders
+uploads/*
+outputs/*
+data/*
+!uploads/.gitkeep
+!outputs/.gitkeep
+!data/.gitkeep
+
+# Operating System
+.DS_Store
+Thumbs.db
+
+# IDEs
+.idea/
+.vscode/

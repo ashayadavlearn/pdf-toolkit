@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}Extract Text from PDF – PDF Toolkit{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Extract Text</li>
+        </ol>
+    </nav>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card border-0 shadow-sm rounded-3 mb-4">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="tool-icon bg-orange-light me-3 mb-0">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <div>
+                            <h3 class="fw-bold mb-1">Extract Text from Digital PDF</h3>
+                            <p class="text-muted small mb-0">Parse text content from selectable digital PDF documents instantly.</p>
+                        </div>
+                    </div>
+
+                    <form action="{{ url_for('extract_text_route') }}" method="POST" enctype="multipart/form-data" class="pdf-action-form" data-action-name="Extracting Text">
+                        <div class="dropzone mb-3">
+                            <i class="fas fa-file-alt dropzone-icon"></i>
+                            <div class="dropzone-text">Upload Digital PDF File</div>
+                            <div class="dropzone-subtext mb-3">Select PDF containing selectable text</div>
+                            <button type="button" class="btn btn-outline-warning btn-sm px-3 text-dark">Choose PDF</button>
+                            <input type="file" name="file" class="d-none single-pdf-input" accept=".pdf" required>
+                        </div>
+
+                        <div id="pdf-info-container" class="mb-3" style="display: none;">
+                            <div class="alert alert-light border d-flex align-items-center justify-content-between">
+                                <span class="fw-bold" id="preview-filename">document.pdf</span>
+                                <span class="badge bg-warning text-dark" id="preview-filesize">0 MB</span>
+                            </div>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-warning text-dark btn-lg fw-bold">
+                                <i class="fas fa-search me-2"></i> Extract Text Now
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Extracted Text Result Card -->
+            {% if text_result %}
+            <div class="card border-0 shadow-sm rounded-3">
+                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <h5 class="fw-bold mb-0"><i class="fas fa-align-left text-warning me-2"></i> Extracted Text Content</h5>
+                    
+                    <div class="d-flex gap-2">
+                        <button type="button" id="copy-text-btn" class="btn btn-sm btn-outline-primary fw-semibold">
+                            <i class="fas fa-copy me-1"></i> Copy Text
+                        </button>
+                        {% if text_result.download_txt %}
+                        <a href="{{ url_for('download_file', filename=text_result.download_txt) }}" class="btn btn-sm btn-outline-success fw-semibold">
+                            <i class="fas fa-download me-1"></i> Download TXT
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="card-body">
+                    <!-- Text Metadata Stats Bar -->
+                    <div class="row g-3 mb-4 text-center">
+                        <div class="col-4">
+                            <div class="p-2 border rounded bg-light">
+                                <div class="small text-muted">Pages Processed</div>
+                                <div class="fw-bold fs-5 text-primary">{{ text_result.pages_processed }}</div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="p-2 border rounded bg-light">
+                                <div class="small text-muted">Word Count</div>
+                                <div class="fw-bold fs-5 text-success">{{ text_result.word_count }}</div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="p-2 border rounded bg-light">
+                                <div class="small text-muted">Character Count</div>
+                                <div class="fw-bold fs-5 text-info">{{ text_result.char_count }}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if text_result.is_empty %}
+                    <div class="alert alert-warning border-0 d-flex align-items-center mb-0">
+                        <i class="fas fa-exclamation-triangle fa-2x me-3 text-warning"></i>
+                        <div>
+                            <h6 class="fw-bold mb-1">No selectable text found</h6>
+                            <p class="mb-0 small">{{ text_result.message }}</p>
+                            <a href="{{ url_for('ocr_pdf_route') }}" class="btn btn-sm btn-dark mt-2">
+                                <i class="fas fa-eye me-1"></i> Switch to OCR Tool
+                            </a>
+                        </div>
+                    </div>
+                    {% else %}
+                    <!-- Text Box Output -->
+                    <div class="extracted-text-box" id="extracted-text-content">{{ text_result.text }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
